@@ -1,0 +1,15 @@
+{
+	"type": "or",
+	"value": [
+		{
+			"type": "=",
+			"value": 1,
+			"variable": 1
+		},
+		{
+			"type": "=",
+			"value": 1,
+			"variable": 3
+		}
+	]
+}

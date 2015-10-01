@@ -1,0 +1,26 @@
+{
+	"type": "root2",
+	"id": 0,
+	"formula": {
+	},
+	"value": [
+		{
+			"type": "root1m",
+			"id": 1,
+			"formula": {
+			},
+			"value": {
+				"type": "root0",
+				"id": 2,
+				"formula": {
+				}
+			}
+		},
+		{
+			"type": "root0",
+			"id": 3,
+			"formula": {
+			}
+		}
+	]
+}

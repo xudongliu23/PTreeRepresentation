@@ -1,0 +1,18 @@
+{
+	"type": "and",
+	"value": [
+		{
+			"type": "=",
+			"value": 1,
+			"variable": 1
+		},
+		{
+			"type": "not",
+			"value": {
+				"type": "=",
+				"value": 1,
+				"variable": 2
+			}
+		}
+	]
+}

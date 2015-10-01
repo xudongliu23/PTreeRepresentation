@@ -3,6 +3,8 @@ SHELL := /bin/bash
 # Determine the platform for portability.
 UNAME := $(shell uname)
 
+EXAMPLES_DIR = examples
+
 ifneq (,$(findstring CYGWIN,$(UNAME)))
 OUTPUT_DIR = out/gcccygwin64
 else ifeq ($(CPATH),)
@@ -121,14 +123,13 @@ endif
 
 CFLAGS += -Wfatal-errors $(LIBJANSSON)
 
-all: make_dir $(OUTPUT_DIR)/test
-
+all: make_dir produce
 make_dir:
 	mkdir -p $(OUTPUT_DIR)
 
-$(OUTPUT_DIR)/test: ptree.c parson.c test.c $(INCLUDE_FILES)
+produce: ptree.c parson.c test.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) -c ptree.c -o $(OUTPUT_DIR)/ptree.o
 	$(CC) $(CFLAGS) -c parson.c -o $(OUTPUT_DIR)/parson.o
 	$(CC) $(CFLAGS) -c test.c -o $(OUTPUT_DIR)/test.o
 	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
-	$(OUTPUT_DIR)/test ptree1.json
+	$(OUTPUT_DIR)/produce $(EXAMPLES_DIR)/ptree_ex2.json

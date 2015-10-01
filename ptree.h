@@ -1,5 +1,5 @@
 /*****************************************************************
- *  Copyright (c) 2015, Palo Alto Research Center.               *
+ *  Copyright (c) 2015, Xudong Liu.                              *
  *  All rights reserved.                                         *
  *****************************************************************/
 
@@ -8,8 +8,8 @@
  */
 
 
-#ifndef PREFERENCES_
-#define PREFERENCES_
+#ifndef PTREE_
+#define PTREE_
 
 /* #include "hpg_types.h" */
 #include "parson.h"

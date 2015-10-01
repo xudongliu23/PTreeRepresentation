@@ -1,0 +1,12 @@
+Ptree structure:
+		0
+	 / \
+	1   3
+  |
+	2
+
+Ptree labels:
+0: x_1 \lor x_3
+1: x_1 \land \neg x_2
+2: (x_3 \rightarrow x_4) \lor (\neg x_3 \rightarrow \neg x_4)
+3: x_2 \land x_4
