@@ -26,6 +26,8 @@ int main(int argc, const char*argv[]) {
     ptree_copy(&p, &copy);
     printf("\nCopy: \n%s\n", parson_json_serialize_to_string(ptree_toJSON(&copy)));
 
+		printf("\nNumber of leaves: %u\n", number_of_leaves(&p));
+
 		ptree_free(&p);
 		ptree_free(&copy);
   }

@@ -61,5 +61,7 @@ void ptree_read(Ptree *ptree, JSON_Object *json);
 
 JSON_Value* ptree_toJSON(Ptree *ptree);
 
+UInt32 number_of_leaves(Ptree *ptree);
+
 
 #endif

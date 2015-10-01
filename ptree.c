@@ -206,3 +206,35 @@ JSON_Value* ptree_toJSON(Ptree *ptree) {
   }
   return json;
 }
+
+UInt32 number_of_leaves(Ptree *ptree) {
+  switch (ptree->type) {
+  case ePreferencePtreeTypeRoot0:
+		return 2;
+    break;
+
+  case ePreferencePtreeTypeRoot2:
+		return number_of_leaves(ptree->lst) + number_of_leaves(ptree->rst);
+    break;
+
+  case ePreferencePtreeTypeRoot1l:
+		return number_of_leaves(ptree->lst) + 1;
+    break;
+
+  case ePreferencePtreeTypeRoot1m:
+		return number_of_leaves(ptree->mst) * 2;
+    break;
+
+  case ePreferencePtreeTypeRoot1r:
+		return number_of_leaves(ptree->rst) + 1;
+    break;
+
+  default:
+		return 0;
+    break;
+  }
+}
+
+
+
+

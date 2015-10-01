@@ -5,26 +5,3 @@
 			2   3
 		 /
     4
-
-{
-	"type": "root1m",
-	"id": 0,
-	"value": {
-		"type": "root2",
-		"id": 1,
-		"value": [
-			{
-				"type": "root1l",
-				"id": 2,
-				"value": {
-					"type": "root0",
-					"id": 4
-				}
-			},
-			{
-				"type": "root0",
-				"id": 3
-			}
-		]
-	}
-}
