@@ -65,6 +65,16 @@ CFLAGS_D += -mno-avx
 CFLAGS_P += -mno-avx
 CXXFLAGS += -mno-avx
 CXXFLAGS_D += -mno-avx
+else
+#INCLUDE_FLAGS += -I$(EPREFIX)/usr/include
+LD_FLAGS += -L$(EPREFIX)/usr/lib
+# if you use static libraries, valgrind generates millions (really!)
+# of false positive error messages and skips over the real problems.
+# The valgrind folks suggest static linking, not static libraries.
+#LD_FLAGS += -static -static-libgcc
+endif
+LD_FLAGS += -pthread
+
 # if we're on Cygwin, insert the flag so we use the proper include files
 ifneq (,$(findstring CYGWIN,$(UNAME)))
 CFLAGS += -DCYGWIN
@@ -79,8 +89,8 @@ ifeq ($(CPATH),)
 # USE GCC FLAGS
 
 # gcc flags to produce optimized code on Linux
-CFLAGS += -DUNIX_ENV -D_LINUX_ -D__UseSSE__ $(INCLUDE_FLAGS) -m64 -msse4.2 -std=gnu99 -pthread -O3 -ggdb3 -fno-strict-aliasing -funroll-l    oops -fwrapv -pedantic -Wall -W -Wstrict-prototypes -Wpointer-arith -Wwrite-strings -Wcast-qual -Wmissing-prototypes -fPIC
-CXXFLAGS += -DUNIX_ENV -D_LINUX_ -D__UseSSE__ $(INCLUDE_FLAGS) -m64 -msse4.2 -pthread -O3 -fno-strict-aliasing -funroll-loops -fwrapv -pe    dantic -Wall -W -Wpointer-arith -Wwrite-strings -Wcast-qual -std=c++0x -fPIC
+CFLAGS += -DUNIX_ENV -D_LINUX_ -D__UseSSE__ $(INCLUDE_FLAGS) -m64 -msse4.2 -std=gnu99 -pthread -O3 -ggdb3 -fno-strict-aliasing -fwrapv -pedantic -Wall -W -Wstrict-prototypes -Wpointer-arith -Wwrite-strings -Wcast-qual -Wmissing-prototypes -fPIC
+CXXFLAGS += -DUNIX_ENV -D_LINUX_ -D__UseSSE__ $(INCLUDE_FLAGS) -m64 -msse4.2 -pthread -O3 -fno-strict-aliasing -fwrapv -pedantic -Wall -W -Wpointer-arith -Wwrite-strings -Wcast-qual -std=c++0x -fPIC
 
 # gcc flags to produce debuggable code
 CFLAGS_D += -DDEBUG -DUNIX_ENV -D_LINUX_ -D__UseSSE__ $(INCLUDE_FLAGS) -m64 -std=gnu99  -pthread -fwrapv -ggdb3 -O0 -pedantic -Wall -W -W    strict-prototypes -Wpointer-arith -Wwrite-strings -Wcast-qual -Wmissing-prototypes
@@ -111,9 +121,14 @@ endif
 
 CFLAGS += -Wfatal-errors $(LIBJANSSON)
 
-$(OUTPUT_DIR)/test: preferences.c parson.c test.c $(INCLUDE_FILES)
-  $(CC) $(CFLAGS) -c preferences.c -o $(OUTPUT_DIR)/preferences.o
-  $(CC) $(CFLAGS) -c parson.c -o $(OUTPUT_DIR)/parson.o
-  $(CC) $(CFLAGS) -c test.c -o $(OUTPUT_DIR)/test.o
-  $(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/preferences.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
-  $(OUTPUT_DIR)/test ptree1.json
+all: make_dir $(OUTPUT_DIR)/test
+
+make_dir:
+	mkdir -p $(OUTPUT_DIR)
+
+$(OUTPUT_DIR)/test: ptree.c parson.c test.c $(INCLUDE_FILES)
+	$(CC) $(CFLAGS) -c ptree.c -o $(OUTPUT_DIR)/ptree.o
+	$(CC) $(CFLAGS) -c parson.c -o $(OUTPUT_DIR)/parson.o
+	$(CC) $(CFLAGS) -c test.c -o $(OUTPUT_DIR)/test.o
+	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
+	$(OUTPUT_DIR)/test ptree1.json
