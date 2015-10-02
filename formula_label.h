@@ -11,10 +11,9 @@
 #define FORMULA_LABEL_
 
 #include "parson.h"
+#include "types.h"
 
 #define cOutcomeVectorSize 20
-
-typedef enum { false, true } bool;
 
 typedef enum {
   eFormulaAtomTypeEquals = 0,
@@ -24,8 +23,8 @@ typedef enum {
 
 typedef struct Atom {
   FormulaAtomType type;
-  unsigned int variable; /* lhs */
-  unsigned int value; /* rhs */
+  UInt32 variable; /* lhs */
+  UInt32 value; /* rhs */
 } Atom;
 /* Example: 'x_4'
    type==eFormulaAtomTypeEquals, 
@@ -52,7 +51,7 @@ typedef struct Formula {
 } Formula;
 
 /* vector of values representing an outcome */
-typedef unsigned int outcomeVector[cOutcomeVectorSize];
+typedef UInt32 OutcomeVector[cOutcomeVectorSize];
 
 /** a stack of pointers to formulas; used as a pool of memory that
     needs to be freed later */
@@ -79,7 +78,7 @@ void formula_free(Formula* p);
    Semantics
 */
 
-int formula_eval(const Formula *formula, const outcomeVector vector);
+int formula_eval(const Formula *formula, const OutcomeVector vector);
 
 /* push negation down to leaf nodes */
 void formula_normalize(Formula *formula);

@@ -13,10 +13,7 @@
 
 /* #include "hpg_types.h" */
 #include "parson.h"
-
-typedef unsigned int UInt32;
-
-typedef enum { false, true } bool;
+#include "types.h"
 
 typedef enum {
 		ePreferencePtreeTypeRoot2 = 0,

@@ -15,8 +15,12 @@ endif
 
 # keep a list of filenames for Doxygen
 INCLUDE_DIR = include
+INCLUDE_FILENAMES = types.h
 # to get the full path names, prepend the include dir to each file name.
 INCLUDE_FILES = $(INCLUDE_FILENAMES:%=$(INCLUDE_DIR)/%)
+
+# Conventions suggest an overall INCLUDE_FLAGS.
+INCLUDE_FLAGS += -I. -I$(INCLUDE_DIR) -I/usr/include
 
 #######################################################
 # Here's the first place where gcc and the intel compiler diverge.
@@ -127,9 +131,10 @@ all: make_dir produce
 make_dir:
 	mkdir -p $(OUTPUT_DIR)
 
-produce: ptree.c parson.c test.c $(INCLUDE_FILES)
-	$(CC) $(CFLAGS) -c ptree.c -o $(OUTPUT_DIR)/ptree.o
+produce: parson.c formula_label.c ptree.c test.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) -c parson.c -o $(OUTPUT_DIR)/parson.o
+	$(CC) $(CFLAGS) -c ptree.c -o $(OUTPUT_DIR)/ptree.o
+	$(CC) $(CFLAGS) -c formula_label.c -o $(OUTPUT_DIR)/formula_label.o
 	$(CC) $(CFLAGS) -c test.c -o $(OUTPUT_DIR)/test.o
-	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
-	$(OUTPUT_DIR)/produce $(EXAMPLES_DIR)/ptree_ex2.json
+	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/formula_label.o $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
+	$(OUTPUT_DIR)/produce $(EXAMPLES_DIR)/ptree_ex2.json $(EXAMPLES_DIR)/label2_ex2.json

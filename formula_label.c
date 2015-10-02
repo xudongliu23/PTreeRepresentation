@@ -107,6 +107,8 @@ void formula_copy(const Formula* in, Formula* out) {
     break;
   case eFormulaTypeAnd:
   case eFormulaTypeOr:
+  case eFormulaTypeImplication:
+  case eFormulaTypeEquivalence:
     out->lhs = formula_alloc();
     formula_copy(in->lhs, out->lhs);
     out->rhs = formula_alloc();
@@ -178,11 +180,21 @@ int formula_eval(const Formula *formula, const outcomeVector vector) {
 
   case eFormulaTypeImplication:
     l = formula_eval(formula->lhs, vector);
-    if (l == 1) {
+    if (l == 0) {
       return 1;
     } else {
       r = formula_eval(formula->rhs, vector);
       return (r == 1 ? 1 : 0);
+    }
+    break;
+
+  case eFormulaTypeEquivalence:
+    l = formula_eval(formula->lhs, vector);
+    r = formula_eval(formula->rhs, vector);
+    if (l == r) {
+      return 1;
+    } else {
+      return 0;
     }
     break;
 
@@ -333,8 +345,8 @@ void formula_read(Formula *formula, JSON_Object *json) {
     formula_read(formula->lhs, lhs);
     formula_read(formula->rhs, rhs);   
 
-  } else if (strcmp(type_string, "after") == 0) {
-    formula->type = eFormulaTypeAfter;
+  } else if (strcmp(type_string, "imp") == 0) {
+    formula->type = eFormulaTypeImplication;
     JSON_Array *array = parson_json_object_get_array(json, "value");
     JSON_Object *lhs = parson_json_array_get_object(array, 0);
     JSON_Object *rhs = parson_json_array_get_object(array, 1);
@@ -343,23 +355,15 @@ void formula_read(Formula *formula, JSON_Object *json) {
     formula_read(formula->lhs, lhs);
     formula_read(formula->rhs, rhs);   
 
-  } else if (strcmp(type_string, "always") == 0) {
-    formula->type = eFormulaTypeAlways;
-    JSON_Object *rhs = parson_json_object_get_object(json, "value");
+  } else if (strcmp(type_string, "equiv") == 0) {
+    formula->type = eFormulaTypeEquivalence;
+    JSON_Array *array = parson_json_object_get_array(json, "value");
+    JSON_Object *lhs = parson_json_array_get_object(array, 0);
+    JSON_Object *rhs = parson_json_array_get_object(array, 1);
+    formula->lhs = formula_alloc();
     formula->rhs = formula_alloc();
-    formula_read(formula->rhs, rhs);
-
-  } else if (strcmp(type_string, "eventually") == 0) {
-    formula->type = eFormulaTypeEventually;
-    JSON_Object *rhs = parson_json_object_get_object(json, "value");
-    formula->rhs = formula_alloc();
-    formula_read(formula->rhs, rhs);
-
-  } else if (strcmp(type_string, "next") == 0) {
-    formula->type = eFormulaTypeNext;
-    JSON_Object *rhs = parson_json_object_get_object(json, "value");
-    formula->rhs = formula_alloc();
-    formula_read(formula->rhs, rhs);
+    formula_read(formula->lhs, lhs);
+    formula_read(formula->rhs, rhs);   
 
   } else if (strcmp(type_string, "false") == 0) {
     formula->type = eFormulaTypeFalse;
@@ -370,7 +374,6 @@ void formula_read(Formula *formula, JSON_Object *json) {
   } else {
     /* default */
     formula->type = eFormulaTypeAtom;
-    /* JSON_Object *atom_json = parson_json_object_get_object(json, "value"); */
     formula->atom = ALLOC(Atom);
     formula_atom_read(formula->atom, json);
   }
@@ -441,10 +444,21 @@ JSON_Value* formula_toJSON(Formula *formula) {
     parson_json_array_append_value(array, formula_toJSON(formula->rhs));
     break;
 
-  case eFormulaTypeAfter:
+  case eFormulaTypeImplication:
     json = parson_json_value_init_object();
     obj = parson_json_object(json);
-    parson_json_object_set_string(obj, "type", "after");
+    parson_json_object_set_string(obj, "type", "imp");
+    array_json = parson_json_value_init_array();
+    array = parson_json_array(array_json);
+    parson_json_object_set_value(obj, "value", array_json);
+    parson_json_array_append_value(array, formula_toJSON(formula->lhs));
+    parson_json_array_append_value(array, formula_toJSON(formula->rhs));
+    break;
+
+  case eFormulaTypeEquivalence:
+    json = parson_json_value_init_object();
+    obj = parson_json_object(json);
+    parson_json_object_set_string(obj, "type", "equiv");
     array_json = parson_json_value_init_array();
     array = parson_json_array(array_json);
     parson_json_object_set_value(obj, "value", array_json);
@@ -456,27 +470,6 @@ JSON_Value* formula_toJSON(Formula *formula) {
     json = parson_json_value_init_object();
     obj = parson_json_object(json);
     parson_json_object_set_string(obj, "type", "not");
-    parson_json_object_set_value(obj, "value", formula_toJSON(formula->rhs));
-    break;
-
-  case eFormulaTypeAlways:
-    json = parson_json_value_init_object();
-    obj = parson_json_object(json);
-    parson_json_object_set_string(obj, "type", "always");
-    parson_json_object_set_value(obj, "value", formula_toJSON(formula->rhs));
-    break;
-
-  case eFormulaTypeEventually:
-    json = parson_json_value_init_object();
-    obj = parson_json_object(json);
-    parson_json_object_set_string(obj, "type", "eventually");
-    parson_json_object_set_value(obj, "value", formula_toJSON(formula->rhs));
-    break;
-
-  case eFormulaTypeNext:
-    json = parson_json_value_init_object();
-    obj = parson_json_object(json);
-    parson_json_object_set_string(obj, "type", "next");
     parson_json_object_set_value(obj, "value", formula_toJSON(formula->rhs));
     break;
 

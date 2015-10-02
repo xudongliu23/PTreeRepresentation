@@ -1,0 +1,41 @@
+{
+	"type": "or",
+	"value": [
+		{
+			"type": "imp",
+			"value": [
+				{
+					"type": "=",
+					"value": 1,
+					"variable": 3
+				},
+				{
+					"type": "=",
+					"value": 1,
+					"variable": 4
+				}
+			]
+		},
+		{
+			"type": "imp",
+			"value": [
+				{
+					"type": "not",
+					"value": {
+						"type": "=",
+						"value": 1,
+						"variable": 3
+					}
+				},
+				{
+					"type": "not",
+					"value": {
+						"type": "=",
+						"value": 1,
+						"variable": 4
+					}
+				}
+			]
+		}
+	]
+}
