@@ -3,7 +3,7 @@ SHELL := /bin/bash
 # Determine the platform for portability.
 UNAME := $(shell uname)
 
-EXAMPLES_DIR = examples
+INSTANCES_DIR = instances
 
 ifneq (,$(findstring CYGWIN,$(UNAME)))
 OUTPUT_DIR = out/gcccygwin64
@@ -131,10 +131,12 @@ all: make_dir produce
 make_dir:
 	mkdir -p $(OUTPUT_DIR)
 
-produce: parson.c formula_label.c ptree.c test.c $(INCLUDE_FILES)
+produce: parson.c formula_label.c ptree.c reasoning.c test.c $(INCLUDE_FILES)
 	$(CC) $(CFLAGS) -c parson.c -o $(OUTPUT_DIR)/parson.o
 	$(CC) $(CFLAGS) -c ptree.c -o $(OUTPUT_DIR)/ptree.o
 	$(CC) $(CFLAGS) -c formula_label.c -o $(OUTPUT_DIR)/formula_label.o
+	$(CC) $(CFLAGS) -c reasoning.c -o $(OUTPUT_DIR)/reasoning.o
 	$(CC) $(CFLAGS) -c test.c -o $(OUTPUT_DIR)/test.o
-	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/formula_label.o $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
-	$(OUTPUT_DIR)/produce $(EXAMPLES_DIR)/ptree_ex2.json $(EXAMPLES_DIR)/label2_ex2.json
+	$(CC) $(LD_FLAGS) $(LINK_ARGS)$(OUTPUT_DIR)/$(notdir $@) $(OUTPUT_DIR)/reasoning.o $(OUTPUT_DIR)/formula_label.o\
+									  $(OUTPUT_DIR)/ptree.o $(OUTPUT_DIR)/parson.o $(OUTPUT_DIR)/test.o
+	$(OUTPUT_DIR)/produce instance2 $(INSTANCES_DIR)/ptree_instance2.json $(INSTANCES_DIR)/label2_instance2.json

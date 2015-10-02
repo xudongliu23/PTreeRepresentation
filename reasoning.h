@@ -14,13 +14,15 @@
 /* #include "hpg_types.h" */
 #include "types.h"
 #include "ptree.h"
-#include "formula_form.h"
+#include "formula_label.h"
 
 /* given a ptree and an outcome, this function computes the
 	 index of the leaf the outcome travels to. */
-UInt32 
+void
 ptreeRepresentationComputeLeafIndex(
-		Ptree *ptree,
-		OutcomeVector outcome);
+		char         			 *instancename,
+		Ptree 		         *ptree,
+		OutcomeVector       outcome,
+		UInt32						 *ind);
 
 #endif

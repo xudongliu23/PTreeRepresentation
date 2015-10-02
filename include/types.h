@@ -16,4 +16,6 @@ typedef unsigned int UInt32;
 
 typedef enum { false, true } bool;
 
+#define cMaxLengthFileName 64
+
 #endif

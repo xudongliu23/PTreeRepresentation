@@ -15,10 +15,10 @@
 
 /* --------------------------------------------------------- */
 
-bool formula_atom_isTrue(Atom *atom, const outcomeVector vector);
+bool formula_atom_isTrue(Atom *atom, const OutcomeVector vector);
 JSON_Value* formula_atom_toJSON(Atom *atom);
 void formula_atom_read(Atom *atom, JSON_Object *json);
-bool formula_progress_aux(Formula *formula, const outcomeVector vector);
+bool formula_progress_aux(Formula *formula, const OutcomeVector vector);
 void formula_shallowCopy(const Formula* in, Formula* out);
 
 
@@ -136,7 +136,7 @@ void formula_shallowCopy(const Formula* in, Formula* out) {
 */
 
 /* Semantics of Atoms */
-bool formula_atom_isTrue(Atom *atom, const outcomeVector vector) {
+bool formula_atom_isTrue(Atom *atom, const OutcomeVector vector) {
   return 
     ((atom->type == eFormulaAtomTypeEquals
       && vector[atom->variable] == atom->value)
@@ -149,7 +149,7 @@ bool formula_atom_isTrue(Atom *atom, const outcomeVector vector) {
 /* Semantics of Formulas */
 
 /* @return formula is 1: true, 0: false */
-int formula_eval(const Formula *formula, const outcomeVector vector) {
+int formula_eval(const Formula *formula, const OutcomeVector vector) {
   int l, r;
   switch (formula->type) {
   case eFormulaTypeFalse: return 0; break;
